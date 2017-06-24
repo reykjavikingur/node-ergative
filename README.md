@@ -1,13 +1,13 @@
-# Object Relay
+# Ergative
 
 Node utility that connects one object to another and transmits setter and method invocations.
 
 ## Example
 
 ```
-ObjectRelay = require('object-relay');
+Ergative = require('ergative');
 
-let relay = ObjectRelay.create({
+let relay = new Ergative.Object({
     status: false,
     ping: function() { /* ... */ }
 });

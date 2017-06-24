@@ -1,14 +1,14 @@
 {
-  "name": "object-relay",
+  "name": "ergative",
   "version": "1.0.0",
-  "description": "Utility to relay changes transmitted from proxy including property setter calls and method invocations",
+  "description": "Utility to relay changes and calls on one object to another",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reykjavikingur/node-object-relay.git"
+    "url": "git+https://github.com/reykjavikingur/node-ergative.git"
   },
   "keywords": [],
   "author": "Andrew Strader",
