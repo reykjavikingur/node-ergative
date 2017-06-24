@@ -3,7 +3,7 @@ const sinon = require('sinon');
 require('should-sinon');
 const FunctionRepeater = require('../lib/function');
 
-describe('FunctionRepeater', () => {
+describe('Ergative.Function', () => {
 
     it('should exist', () => {
         should(FunctionRepeater).be.ok();

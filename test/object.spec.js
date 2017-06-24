@@ -3,7 +3,7 @@ const should = require('should');
 const sinon = require('sinon');
 require('should-sinon');
 
-describe('Repeater', () => {
+describe('Ergative.Object', () => {
 
     it('should be defined', () => {
         should(ObjectRelay).be.ok();
