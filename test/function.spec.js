@@ -1,7 +1,7 @@
 const should = require('should');
 const sinon = require('sinon');
 require('should-sinon');
-const FunctionRepeater = require('../lib/function-repeater');
+const FunctionRepeater = require('../lib/function');
 
 describe('FunctionRepeater', () => {
 

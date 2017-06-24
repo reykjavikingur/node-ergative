@@ -1,4 +1,4 @@
-const ObjectRelay = require('../lib/repeater');
+const ObjectRelay = require('../lib/object');
 const should = require('should');
 const sinon = require('sinon');
 require('should-sinon');
