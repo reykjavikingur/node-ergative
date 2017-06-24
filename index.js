@@ -1,14 +1,14 @@
-const ObjectRelay = require('./lib/object');
-const FunctionRelay = require('./lib/function');
+const ErgativeObject = require('./lib/object');
+const ErgativeFunction = require('./lib/function');
 
-class Ergative extends ObjectRelay {
+class Ergative extends ErgativeObject {
 
     static get Object() {
-        return ObjectRelay;
+        return ErgativeObject;
     }
 
     static get Function() {
-        return FunctionRelay;
+        return ErgativeFunction;
     }
 
 }

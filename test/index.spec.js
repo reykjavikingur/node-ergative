@@ -1,16 +1,16 @@
 const should = require('should');
 const Ergative = require('../');
-const ObjectRelay = require('../lib/object');
-const FunctionRelay = require('../lib/function');
+const ErgativeObject = require('../lib/object');
+const ErgativeFunction = require('../lib/function');
 
 describe('Ergative', () => {
 
     it('should have correct Object', () => {
-        should(Ergative.Object).eql(ObjectRelay);
+        should(Ergative.Object).eql(ErgativeObject);
     });
 
     it('should have correct Function', () => {
-        should(Ergative.Function).eql(FunctionRelay);
+        should(Ergative.Function).eql(ErgativeFunction);
     });
 
     describe('instance', () => {

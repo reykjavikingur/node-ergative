@@ -1,5 +1,5 @@
 const should = require('should');
-const ArrayRelay = require('../lib/array');
+const ErgativeArray = require('../lib/array');
 
 describe('Ergative.Array', () => {
 
@@ -7,7 +7,7 @@ describe('Ergative.Array', () => {
         var target, instance;
         beforeEach(() => {
             target = [];
-            instance = new ArrayRelay(target);
+            instance = new ErgativeArray(target);
         });
         describe('proxy', () => {
             it('should exist', () => {

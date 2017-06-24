@@ -1,4 +1,4 @@
-const ObjectRelay = require('../lib/object');
+const ErgativeObject = require('../lib/object');
 const should = require('should');
 const sinon = require('sinon');
 require('should-sinon');
@@ -6,7 +6,7 @@ require('should-sinon');
 describe('Ergative.Object', () => {
 
     it('should be defined', () => {
-        should(ObjectRelay).be.ok();
+        should(ErgativeObject).be.ok();
     });
 
     describe('instance with target having initial property value', () => {
@@ -16,7 +16,7 @@ describe('Ergative.Object', () => {
             target = {
                 foo: value
             };
-            instance = new ObjectRelay(target);
+            instance = new ErgativeObject(target);
         });
         describe('deleting property on proxy', () => {
             beforeEach(() => {
@@ -146,7 +146,7 @@ describe('Ergative.Object', () => {
                     targetSpy.apply(this, arguments);
                 }
             };
-            instance = new ObjectRelay(target);
+            instance = new ErgativeObject(target);
         });
         it('should not yet have called the spy', () => {
             should(targetSpy).not.be.called();
@@ -266,7 +266,7 @@ describe('Ergative.Object', () => {
 
         beforeEach(() => {
             target = {};
-            instance = new ObjectRelay(target);
+            instance = new ErgativeObject(target);
         });
 
         it('should have proxy', () => {

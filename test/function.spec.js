@@ -1,12 +1,12 @@
 const should = require('should');
 const sinon = require('sinon');
 require('should-sinon');
-const FunctionRepeater = require('../lib/function');
+const ErgativeFunction = require('../lib/function');
 
 describe('Ergative.Function', () => {
 
     it('should exist', () => {
-        should(FunctionRepeater).be.ok();
+        should(ErgativeFunction).be.ok();
     });
 
     describe('instance', () => {
@@ -16,7 +16,7 @@ describe('Ergative.Function', () => {
             target = function () {
                 targetSpy.apply(this, arguments);
             };
-            instance = new FunctionRepeater(target);
+            instance = new ErgativeFunction(target);
         });
         it('should exist', () => {
             should(instance).be.ok();
@@ -150,7 +150,7 @@ describe('Ergative.Function', () => {
                     targetSpy.apply(this, arguments);
                 }
             };
-            instance = new FunctionRepeater(context.craft, context);
+            instance = new ErgativeFunction(context.craft, context);
         });
         describe('when calling proxy', () => {
             beforeEach(() => {
@@ -172,7 +172,7 @@ describe('Ergative.Function', () => {
                     targetSpy.apply(this, arguments);
                 }
             };
-            instance = new FunctionRepeater(context.craft);
+            instance = new ErgativeFunction(context.craft);
         });
         describe('when calling proxy', () => {
             beforeEach(() => {
@@ -191,7 +191,7 @@ describe('Ergative.Function', () => {
             target = function () {
                 return rv;
             };
-            instance = new FunctionRepeater(target);
+            instance = new ErgativeFunction(target);
         });
         describe('proxy', () => {
             it('should return same value as target', () => {
@@ -207,7 +207,7 @@ describe('Ergative.Function', () => {
             target = function () {
                 throw new Error('fake error');
             };
-            instance = new FunctionRepeater(target);
+            instance = new ErgativeFunction(target);
         });
         describe('proxy', () => {
             it('should throw error', () => {
