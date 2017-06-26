@@ -54,8 +54,81 @@ describe('Ergative.Array', () => {
                 });
             });
         });
-        // TODO test transmitting to failing receiver without catch
-        // TODO test transmitting to failing receiver with catch
+        describe('transmitting to failing receiver', () => {
+            var receiverSpy, receiver, failing, transmission;
+            beforeEach(() => {
+                receiverSpy = sinon.spy();
+                failing = false;
+                receiver = {
+                    splice() {
+                        receiverSpy.apply(this, arguments);
+                        if (failing) {
+                            throw new Error('fake error');
+                        }
+                    }
+                };
+                transmission = instance.transmitter.transmit(receiver);
+            });
+            it('should return transmission', () => {
+                should(transmission).be.ok();
+            });
+            describe('push onto proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    failing = true;
+                    instance.proxy.push('f');
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.called();
+                });
+                it('should have correct value', () => {
+                    should(instance.proxy.length).eql(1);
+                    should(instance.proxy[0]).eql('f');
+                });
+            });
+        });
+        describe('transmitting to failing receiver with catch', () => {
+            var receiverSpy, catcherSpy, receiver, catcher, failing, transmission;
+            beforeEach(() => {
+                receiverSpy = sinon.spy();
+                catcherSpy = sinon.spy();
+                failing = false;
+                receiver = {
+                    splice() {
+                        receiverSpy.apply(this, arguments);
+                        if (failing) {
+                            throw new Error('fake error');
+                        }
+                    }
+                };
+                catcher = function (e) {
+                    catcherSpy.apply(this, arguments);
+                };
+                transmission = instance.transmitter.transmit(receiver).catch(catcher);
+            });
+            it('should return transmission', () => {
+                should(transmission).be.ok();
+            });
+            describe('push onto proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    catcherSpy.reset();
+                    failing = true;
+                    instance.proxy.push('f');
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.called();
+                });
+                it('should have correct value', () => {
+                    should(instance.proxy.length).eql(1);
+                    should(instance.proxy[0]).eql('f');
+                });
+                it('should call catcher', () => {
+                    should(catcherSpy).be.called();
+                });
+            });
+            // TODO test setting
+        });
         // TODO test pop
         // TODO test splice
         // TODO test unshift
