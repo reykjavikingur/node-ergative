@@ -4,6 +4,9 @@ const ErgativeArray = require('../lib/array');
 
 describe('Ergative.Array', () => {
 
+    // TODO test theory that all kinds of changes to proxy are mirrored accurately to target
+    // TODO test theory that all kinds of changes to proxy are transmitted accurately to receiver
+
     describe('instance with empty target', () => {
         var target, instance;
         beforeEach(() => {
@@ -51,6 +54,16 @@ describe('Ergative.Array', () => {
                 });
             });
         });
+        // TODO test transmitting to failing receiver without catch
+        // TODO test transmitting to failing receiver with catch
+        // TODO test pop
+        // TODO test splice
+        // TODO test unshift
+        // TODO test shift
+        // TODO test reverse
+        // TODO test sort
+        // TODO test fill
+        // TODO test copyWithin
     });
 
     describe('instance with target having single item', () => {
@@ -62,6 +75,9 @@ describe('Ergative.Array', () => {
         describe('proxy', () => {
             it('should have length 1', () => {
                 should(instance.proxy.length).eql(1);
+            });
+            it('should have correct contents', () => {
+                should(instance.proxy[0]).eql('a');
             });
         });
         describe('transmitting', () => {
@@ -85,6 +101,37 @@ describe('Ergative.Array', () => {
                 });
                 it('should call receiver', () => {
                     should(receiverSpy).be.calledWith(1, 0, 'b');
+                });
+                it('should change proxy to correct value', () => {
+                    should(instance.proxy.length).eql(2);
+                    should(instance.proxy[0]).eql('a');
+                    should(instance.proxy[1]).eql('b');
+                });
+            });
+            describe('set item in proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy[0] = 'z';
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 1, 'z');
+                });
+                it('should change proxy to correct value', () => {
+                    should(instance.proxy.length).eql(1);
+                    should(instance.proxy[0]).eql('z');
+                });
+            });
+            describe('delete item in proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    delete instance.proxy[0];
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 1, undefined);
+                });
+                it('should change proxy to correct value', () => {
+                    should(instance.proxy.length).eql(1);
+                    should(instance.proxy[0]).eql(undefined);
                 });
             });
         });
