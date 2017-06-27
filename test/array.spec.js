@@ -122,14 +122,6 @@ describe('Ergative.Array', () => {
                     should(receiverSpy).be.calledWith(0, 0, 'a', 'b', 'c');
                 });
             });
-            // TODO test splice into
-            // TODO test pop
-            // TODO test splice out of
-            // TODO test shift
-            // TODO test reverse
-            // TODO test sort
-            // TODO test copyWithin
-            // TODO test fill
         });
         describe('transmitting to failing receiver', () => {
             var receiverSpy, receiver, failing, transmission;
@@ -274,6 +266,59 @@ describe('Ergative.Array', () => {
                 it('should change proxy to correct value', () => {
                     should(instance.proxy.length).eql(1);
                     should(instance.proxy[0]).eql(undefined);
+                });
+            });
+        });
+    });
+    describe('instance with target having three values', () => {
+        var target, instance;
+        beforeEach(() => {
+            target = ['e', 'i', 'pi'];
+            instance = new ErgativeArray(target);
+        });
+        describe('proxy', () => {
+            it('should have correct contents', () => {
+                should(instance.proxy.length).eql(3);
+                should(instance.proxy[0]).eql('e');
+                should(instance.proxy[1]).eql('i');
+                should(instance.proxy[2]).eql('pi');
+            });
+            // TODO test pop
+            // TODO test splice out of
+            // TODO test shift
+            describe('transmitting', () => {
+                var receiverSpy, receiver, transmission;
+                beforeEach(() => {
+                    receiverSpy = sinon.spy();
+                    receiver = {
+                        splice() {
+                            receiverSpy.apply(this, arguments);
+                        }
+                    };
+                    transmission = instance.transmitter.transmit(receiver);
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 0, 'e', 'i', 'pi');
+                });
+                describe('pop', () => {
+                    var value;
+                    beforeEach(() => {
+                        receiverSpy.reset();
+                        value = instance.proxy.pop();
+                    });
+                    it('should return correct value', () => {
+                        should(value).eql('pi');
+                    });
+                    it('should reduce length', () => {
+                        should(instance.proxy.length).eql(2);
+                    });
+                    it('should have correct contents', () => {
+                        should(instance.proxy[0]).eql('e');
+                        should(instance.proxy[1]).eql('i');
+                    });
+                    it('should call receiver', () => {
+                        should(receiverSpy).be.calledWith(2, 1);
+                    });
                 });
             });
         });
