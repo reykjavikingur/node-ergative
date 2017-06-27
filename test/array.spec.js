@@ -53,6 +53,83 @@ describe('Ergative.Array', () => {
                     should(receiverSpy).be.calledWith(0, 0, 'a');
                 });
             });
+            describe('push multiple onto proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy.push('a', 'b');
+                });
+                it('should have correct value', () => {
+                    should(instance.proxy.length).eql(2);
+                    should(instance.proxy[0]).eql('a');
+                    should(instance.proxy[1]).eql('b');
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 0, 'a', 'b');
+                });
+            });
+            describe('setting item in proxy directly', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy[0] = 'v';
+                });
+                it('should have correct value', () => {
+                    should(instance.proxy.length).eql(1);
+                    should(instance.proxy[0]).eql('v');
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 1, 'v');
+                });
+            });
+            describe('unshift into proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy.unshift('g');
+                });
+                it('should have correct value', () => {
+                    should(instance.proxy.length).eql(1);
+                    should(instance.proxy[0]).eql('g');
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 0, 'g');
+                });
+            });
+            describe('unshift multiple into proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy.unshift('g', 'h');
+                });
+                it('should have correct value', () => {
+                    should(instance.proxy.length).eql(2);
+                    should(instance.proxy[0]).eql('g');
+                    should(instance.proxy[1]).eql('h');
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 0, 'g', 'h');
+                });
+            });
+            describe('splice into proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy.splice(0, 0, 'a', 'b', 'c');
+                });
+                it('should have correct value', () => {
+                    should(instance.proxy.length).eql(3);
+                    should(instance.proxy[0]).eql('a');
+                    should(instance.proxy[1]).eql('b');
+                    should(instance.proxy[2]).eql('c');
+                });
+                it('should call proxy', () => {
+                    should(receiverSpy).be.calledWith(0, 0, 'a', 'b', 'c');
+                });
+            });
+            // TODO test splice into
+            // TODO test pop
+            // TODO test splice out of
+            // TODO test shift
+            // TODO test reverse
+            // TODO test sort
+            // TODO test copyWithin
+            // TODO test fill
         });
         describe('transmitting to failing receiver', () => {
             var receiverSpy, receiver, failing, transmission;
@@ -129,14 +206,6 @@ describe('Ergative.Array', () => {
             });
             // TODO test setting
         });
-        // TODO test pop
-        // TODO test splice
-        // TODO test unshift
-        // TODO test shift
-        // TODO test reverse
-        // TODO test sort
-        // TODO test fill
-        // TODO test copyWithin
     });
 
     describe('instance with target having single item', () => {
