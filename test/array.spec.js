@@ -196,7 +196,6 @@ describe('Ergative.Array', () => {
                     should(catcherSpy).be.called();
                 });
             });
-            // TODO test setting
         });
     });
 
@@ -283,9 +282,6 @@ describe('Ergative.Array', () => {
                 should(instance.proxy[1]).eql('i');
                 should(instance.proxy[2]).eql('pi');
             });
-            // TODO test pop
-            // TODO test splice out of
-            // TODO test shift
             describe('transmitting', () => {
                 var receiverSpy, receiver, transmission;
                 beforeEach(() => {
@@ -318,6 +314,26 @@ describe('Ergative.Array', () => {
                     });
                     it('should call receiver', () => {
                         should(receiverSpy).be.calledWith(2, 1);
+                    });
+                });
+                describe('shift', () => {
+                    var value;
+                    beforeEach(() => {
+                        receiverSpy.reset();
+                        value = instance.proxy.shift();
+                    });
+                    it('should return correct value', () => {
+                        should(value).eql('e');
+                    });
+                    it('should reduce length', () => {
+                        should(instance.proxy.length).eql(2);
+                    });
+                    it('should have correct contents', () => {
+                        should(instance.proxy[0]).eql('i');
+                        should(instance.proxy[1]).eql('pi');
+                    });
+                    it('should call receiver', () => {
+                        should(receiverSpy).be.calledWith(0, 1);
                     });
                 });
             });
