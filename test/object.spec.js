@@ -43,6 +43,31 @@ describe('Ergative.Object', () => {
                 should(receiverSpy).be.calledWith(value);
             });
         });
+        describe('transmitting to receiver wrongly expecting method', () => {
+            var presumptuousMethod, receiverSpy, receiver, transmission;
+            beforeEach(() => {
+                receiverSpy = sinon.spy();
+                receiver = {
+                    foo() {
+                        receiverSpy.apply(this, arguments);
+                    }
+                };
+                presumptuousMethod = receiver.foo;
+                transmission = instance.transmitter.transmit(receiver);
+            });
+            it('should not call receiver', () => {
+                should(receiverSpy).not.be.called();
+            });
+            describe('changing property', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy.foo = 200;
+                });
+                it('should not call receiver', () => {
+                    should(receiverSpy).not.be.called();
+                });
+            });
+        });
         describe('transmitting to receiver with conditionally faulty setter', () => {
             var invalidValue, receiverError, receiverSpy, receiver, transmission;
             beforeEach(() => {
@@ -207,6 +232,21 @@ describe('Ergative.Object', () => {
                         should(receiverSpy).not.be.called();
                     });
                 });
+            });
+        });
+        describe('transmitting to receiver with setter instead of regular method', () => {
+            var receiverSpy, receiver, transmission;
+            beforeEach(() => {
+                receiverSpy = sinon.spy();
+                receiver = {
+                    set make(value) {
+                        receiverSpy.apply(this, arguments);
+                    }
+                };
+                transmission = instance.transmitter.transmit(receiver);
+            });
+            it('should not call receiver', () => {
+                should(receiverSpy).not.be.called();
             });
         });
         describe('transmitting to receiver with method that throws error', () => {
@@ -393,6 +433,21 @@ describe('Ergative.Object', () => {
                 });
             });
         });
+        describe('transmitting to setter', () => {
+            var receiverSpy, receiver, transmission;
+            beforeEach(() => {
+                receiverSpy = sinon.spy();
+                receiver = {
+                    set user(value) {
+                        receiverSpy.apply(this, arguments);
+                    }
+                };
+                transmission = instance.transmitter.transmit(receiver);
+            });
+            it('should not call receiver', () => {
+                should(receiverSpy).not.be.called();
+            });
+        });
         describe('transmitting to nested property', () => {
             var receiverSpy, receiver, transmission;
             beforeEach(() => {
@@ -513,8 +568,76 @@ describe('Ergative.Object', () => {
                     transmission.close();
                     instance.proxy.message.send();
                 });
-                it.only('should not call receiver', () => {
+                it('should not call receiver', () => {
                     should(receiverSpy).not.be.called();
+                });
+            });
+        });
+    });
+
+    describe('instance with target having array property', () => {
+        var target, instance;
+        beforeEach(() => {
+            target = {
+                name: 'stuff',
+                items: ['a', 'b']
+            };
+            instance = new ErgativeObject(target);
+        });
+        describe('proxy', () => {
+            it('should have same array property as target', () => {
+                should(instance.proxy.items.length).eql(2);
+                should(instance.proxy.items[0]).eql('a');
+                should(instance.proxy.items[1]).eql('b');
+            });
+            describe('changing array property', () => {
+                var attempt;
+                beforeEach(() => {
+                    attempt = () => {
+                        instance.proxy.items = ['x', 'q'];
+                    };
+                });
+                it('should throw error', () => {
+                    should(attempt).throw();
+                });
+                it('should not work', () => {
+                    should(instance.proxy.items.length).eql(2);
+                    should(instance.proxy.items[0]).eql('a');
+                    should(instance.proxy.items[1]).eql('b');
+                });
+            });
+            describe('adding item', () => {
+                beforeEach(() => {
+                    instance.proxy.items.push('c');
+                });
+                it('should update target', () => {
+                    should(target.items).eql(['a', 'b', 'c']);
+                });
+            });
+            describe('transmitting', () => {
+                var receiverSpy, receiver, transmission;
+                beforeEach(() => {
+                    receiverSpy = sinon.spy();
+                    receiver = {
+                        items: {
+                            splice() {
+                                receiverSpy.apply(this, arguments);
+                            }
+                        }
+                    };
+                    transmission = instance.transmitter.transmit(receiver);
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 0, 'a', 'b');
+                });
+                describe('adding item via proxy', () => {
+                    beforeEach(() => {
+                        receiverSpy.reset();
+                        instance.proxy.items.push('d');
+                    });
+                    it('should call receiver', () => {
+                        should(receiverSpy).be.calledWith(2, 0, 'd');
+                    });
                 });
             });
         });
