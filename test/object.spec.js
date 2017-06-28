@@ -363,7 +363,7 @@ describe('Ergative.Object', () => {
             };
             instance = new ErgativeObject(target);
         });
-        describe('changing nested value', () => {
+        describe('changing nesting value', () => {
             var attempt;
             beforeEach(() => {
                 attempt = () => {
@@ -382,6 +382,14 @@ describe('Ergative.Object', () => {
                 should(instance.proxy.user).eql({
                     id: 777,
                     name: 'Gmarque'
+                });
+            });
+            describe('changing nested value', () => {
+                beforeEach(() => {
+                    instance.proxy.user.name = 'Blark';
+                });
+                it('should change target', () => {
+                    should(target.user.name).eql('Blark');
                 });
             });
         });
@@ -434,4 +442,81 @@ describe('Ergative.Object', () => {
         });
     });
 
+    describe('instance with target having nested object with method', () => {
+        var targetSpy, target, instance;
+        beforeEach(() => {
+            targetSpy = sinon.spy();
+            target = {
+                message: {
+                    send() {
+                        targetSpy.apply(this, arguments);
+                    }
+                }
+            };
+            instance = new ErgativeObject(target);
+        });
+        it('should not call target', () => {
+            should(targetSpy).not.be.called();
+        });
+        describe('calling nested method through proxy', () => {
+            beforeEach(() => {
+                targetSpy.reset();
+                instance.proxy.message.send();
+            });
+            it('should call target', () => {
+                should(targetSpy).be.called();
+            });
+        });
+        describe('transmitting', () => {
+            var receiverSpy, receiver, transmission;
+            beforeEach(() => {
+                receiverSpy = sinon.spy();
+                receiver = {
+                    message: {
+                        send() {
+                            receiverSpy.apply(this, arguments);
+                        }
+                    }
+                };
+                transmission = instance.transmitter.transmit(receiver);
+            });
+            it('should not call receiver', () => {
+                should(receiverSpy).not.be.called();
+            });
+            describe('calling nested method through proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy.message.send();
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.called();
+                });
+                it('should call receiver on correct context', () => {
+                    should(receiverSpy).be.calledOn(receiver.message);
+                });
+            });
+            describe('calling nested method with argument through proxy', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy.message.send('hi');
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.called();
+                });
+                it('should call receiver with correct arguments', () => {
+                    should(receiverSpy).be.calledWith('hi');
+                });
+            });
+            describe('closing', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    transmission.close();
+                    instance.proxy.message.send();
+                });
+                it.only('should not call receiver', () => {
+                    should(receiverSpy).not.be.called();
+                });
+            });
+        });
+    });
 });
