@@ -351,4 +351,74 @@ describe('Ergative.Object', () => {
 
     });
 
+    describe('instance with target having nested structure', () => {
+        var target, instance;
+        beforeEach(() => {
+            target = {
+                status: 'available',
+                user: {
+                    id: 777,
+                    name: 'Gmarque'
+                }
+            };
+            instance = new ErgativeObject(target);
+        });
+        xit('should not allow updates to nested object', () => {
+            let f = () => {
+                instance.proxy.user = {
+                    id: 666,
+                    name: 'Narc'
+                };
+            };
+            should(f).throw();
+        });
+        describe('transmitting to nested property', () => {
+            var receiverSpy, receiver, transmission;
+            beforeEach(() => {
+                receiverSpy = sinon.spy();
+                receiver = {
+                    user: {
+                        set name(value) {
+                            receiverSpy.apply(this, arguments);
+                        }
+                    }
+                };
+                transmission = instance.transmitter.transmit(receiver);
+            });
+            xit('should call receiver', () => {
+                should(receiverSpy).be.calledWith('Gmarque');
+            });
+            describe('changing nested property', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    instance.proxy.user.name = 'Maark';
+                });
+                it('should change target', () => {
+                    should(target.user.name).eql('Maark');
+                });
+                xit('should call receiver', () => {
+                    should(receiverSpy).be.calledWith('Maark');
+                });
+            });
+            describe('closing transmission', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    transmission.close();
+                });
+                describe('changing nested property', () => {
+                    beforeEach(() => {
+                        receiverSpy.reset();
+                        instance.proxy.user.name = 'Maark';
+                    });
+                    it('should change target', () => {
+                        should(target.user.name).eql('Maark');
+                    });
+                    it('should not call receiver', () => {
+                        should(receiverSpy).not.be.called();
+                    });
+                });
+            });
+        });
+    });
+
 });
