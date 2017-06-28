@@ -363,14 +363,27 @@ describe('Ergative.Object', () => {
             };
             instance = new ErgativeObject(target);
         });
-        xit('should not allow updates to nested object', () => {
-            let f = () => {
-                instance.proxy.user = {
-                    id: 666,
-                    name: 'Narc'
+        describe('changing nested value', () => {
+            var attempt;
+            beforeEach(() => {
+                attempt = () => {
+                    instance.proxy.user = {
+                        id: 666,
+                        name: 'Narc'
+                    };
                 };
-            };
-            should(f).throw();
+            });
+            it('should not work', () => {
+                should(attempt).throw();
+            });
+        });
+        describe('proxy', () => {
+            it('should have correct nested value', () => {
+                should(instance.proxy.user).eql({
+                    id: 777,
+                    name: 'Gmarque'
+                });
+            });
         });
         describe('transmitting to nested property', () => {
             var receiverSpy, receiver, transmission;
@@ -385,7 +398,7 @@ describe('Ergative.Object', () => {
                 };
                 transmission = instance.transmitter.transmit(receiver);
             });
-            xit('should call receiver', () => {
+            it('should call receiver', () => {
                 should(receiverSpy).be.calledWith('Gmarque');
             });
             describe('changing nested property', () => {
@@ -396,7 +409,7 @@ describe('Ergative.Object', () => {
                 it('should change target', () => {
                     should(target.user.name).eql('Maark');
                 });
-                xit('should call receiver', () => {
+                it('should call receiver', () => {
                     should(receiverSpy).be.calledWith('Maark');
                 });
             });
