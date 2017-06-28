@@ -53,6 +53,20 @@ describe('Ergative.Array', () => {
                     should(receiverSpy).be.calledWith(0, 0, 'a');
                 });
             });
+            describe('closing transmission', () => {
+                beforeEach(() => {
+                    receiverSpy.reset();
+                    transmission.close();
+                });
+                describe('push onto proxy', () => {
+                    beforeEach(() => {
+                        instance.proxy.push('a');
+                    });
+                    it('should not call receiver', () => {
+                        should(receiverSpy).not.be.called();
+                    });
+                });
+            });
             describe('push multiple onto proxy', () => {
                 beforeEach(() => {
                     receiverSpy.reset();
