@@ -296,6 +296,23 @@ describe('Ergative.Array', () => {
                 should(instance.proxy[1]).eql('i');
                 should(instance.proxy[2]).eql('pi');
             });
+            it('should be able to join', () => {
+                should(instance.proxy.join(',')).eql('e,i,pi');
+            });
+            it('should be able to iterate', () => {
+                var a = [];
+                for (let x of instance.proxy) {
+                    a.push(x);
+                }
+                should(a).eql(['e', 'i', 'pi']);
+            });
+            it('should be able to iterate over keys', () => {
+                var ks = [];
+                for (let k in instance.proxy) {
+                    ks.push(k);
+                }
+                should(ks).eql(['0', '1', '2']);
+            });
             describe('transmitting', () => {
                 var receiverSpy, receiver, transmission;
                 beforeEach(() => {
