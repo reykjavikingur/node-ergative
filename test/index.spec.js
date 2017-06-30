@@ -2,6 +2,7 @@ const should = require('should');
 const Ergative = require('../');
 const ErgativeObject = require('../lib/object');
 const ErgativeFunction = require('../lib/function');
+const ErgativeArray = require('../lib/array');
 
 describe('Ergative', () => {
 
@@ -11,6 +12,10 @@ describe('Ergative', () => {
 
     it('should have correct Function', () => {
         should(Ergative.Function).eql(ErgativeFunction);
+    });
+
+    it('should have correct Array', () => {
+        should(Ergative.Array).eql(ErgativeArray);
     });
 
     describe('instance', () => {
