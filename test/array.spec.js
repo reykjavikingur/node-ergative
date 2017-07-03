@@ -283,6 +283,7 @@ describe('Ergative.Array', () => {
             });
         });
     });
+
     describe('instance with target having three values', () => {
         var target, instance;
         beforeEach(() => {
@@ -369,5 +370,30 @@ describe('Ergative.Array', () => {
                 });
             });
         });
+        describe('mapping', () => {
+            var fn, mappedTransmitter;
+            beforeEach(() => {
+                fn = item => item + 'x';
+                mappedTransmitter = instance.transmitter.map(fn);
+            });
+            it('should return transmitter', () => {
+                should(mappedTransmitter).be.ok();
+            });
+            describe('transmitting', () => {
+                var receiverSpy, mappedTransmission;
+                beforeEach(() => {
+                    receiverSpy = sinon.spy();
+                    mappedTransmission = mappedTransmitter.transmit({
+                        splice() {
+                            receiverSpy.apply(this, arguments);
+                        }
+                    });
+                });
+                it('should call receiver', () => {
+                    should(receiverSpy).be.calledWith(0, 0, 'ex', 'ix', 'pix');
+                });
+            });
+        });
     });
+
 });
