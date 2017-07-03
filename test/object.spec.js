@@ -234,6 +234,38 @@ describe('Ergative.Object', () => {
                 });
             });
         });
+        describe('plucking method from transmitter', () => {
+            var subTransmitter;
+            beforeEach(() => {
+                subTransmitter = instance.transmitter.pluck('make');
+            });
+            it('should return something', () => {
+                should(subTransmitter).be.ok();
+            });
+            describe('transmitting', () => {
+                var receiverSpy, subTransmission;
+                beforeEach(() => {
+                    receiverSpy = sinon.spy();
+                    subTransmission = subTransmitter.transmit(function () {
+                        receiverSpy.apply(this, arguments);
+                    });
+                });
+                it('should return transmission', () => {
+                    should(subTransmission).be.ok();
+                });
+                it('should not yet call receiver', () => {
+                    should(receiverSpy).not.be.called();
+                });
+                describe('calling proxy method', () => {
+                    beforeEach(() => {
+                        instance.proxy.make();
+                    });
+                    it('should call receiver', () => {
+                        should(receiverSpy).be.called();
+                    });
+                });
+            });
+        });
         describe('transmitting to receiver with setter instead of regular method', () => {
             var receiverSpy, receiver, transmission;
             beforeEach(() => {
@@ -495,6 +527,18 @@ describe('Ergative.Object', () => {
                 });
             });
         });
+        describe('plucking from transmitter', () => {
+            var subTransmitter;
+            beforeEach(() => {
+                subTransmitter = instance.transmitter.pluck('user');
+            });
+            it('should return sub-transmitter', () => {
+                should(subTransmitter).be.ok();
+            });
+            it('should be able to create sub-transmissions', () => {
+                should(subTransmitter.transmit).be.a.Function();
+            });
+        });
     });
 
     describe('instance with target having nested object with method', () => {
@@ -637,6 +681,31 @@ describe('Ergative.Object', () => {
                     });
                     it('should call receiver', () => {
                         should(receiverSpy).be.calledWith(2, 0, 'd');
+                    });
+                });
+            });
+        });
+        describe('transmitter', () => {
+            describe('plucking array', () => {
+                var subTransmitter;
+                beforeEach(() => {
+                    subTransmitter = instance.transmitter.pluck('items');
+                });
+                it('should return something', () => {
+                    should(subTransmitter).be.ok();
+                });
+                describe('transmitting', () => {
+                    var receiverSpy, subTransmission;
+                    beforeEach(() => {
+                        receiverSpy = sinon.spy();
+                        subTransmission = subTransmitter.transmit({
+                            splice() {
+                                receiverSpy.apply(this, arguments);
+                            }
+                        });
+                    });
+                    it('should call subreceiver', () => {
+                        should(receiverSpy).be.calledWith(0, 0, 'a', 'b');
                     });
                 });
             });
