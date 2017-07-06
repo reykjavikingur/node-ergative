@@ -370,11 +370,13 @@ describe('Ergative.Array', () => {
                 });
             });
         });
+
         describe('mapping', () => {
-            var fn, mappedTransmitter;
+            var fn, fnSpy, mappedTransmitter;
             beforeEach(() => {
                 fn = item => item + 'x';
-                mappedTransmitter = instance.transmitter.map(fn);
+                fnSpy = sinon.spy(fn);
+                mappedTransmitter = instance.transmitter.map(fnSpy);
             });
             it('should return transmitter', () => {
                 should(mappedTransmitter).be.ok();
@@ -389,11 +391,32 @@ describe('Ergative.Array', () => {
                         }
                     });
                 });
+                it('should call function', () => {
+                    should(fnSpy).be.calledWith('e', 0);
+                    should(fnSpy).be.calledWith('i', 1);
+                    should(fnSpy).be.calledWith('pi', 2);
+                });
                 it('should call receiver', () => {
                     should(receiverSpy).be.calledWith(0, 0, 'ex', 'ix', 'pix');
                 });
+
+                describe('modification', () => {
+                    beforeEach(() => {
+                        fnSpy.reset();
+                        instance.proxy.splice(1, 1, 'o', 'r');
+                    });
+                    it('should call function', () => {
+                        should(fnSpy).be.calledWith('o', 1);
+                        should(fnSpy).be.calledWith('r', 2);
+                    });
+                    it('should call receiver', () => {
+                        should(receiverSpy).be.calledWith(1, 1, 'ox', 'rx');
+                    });
+
+                });
             });
         });
+        
     });
 
 });
