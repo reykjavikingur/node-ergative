@@ -1,6 +1,6 @@
 {
   "name": "ergative",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Utility to relay changes and calls on one object to another",
   "main": "index.js",
   "scripts": {
